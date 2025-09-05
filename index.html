@@ -11,20 +11,41 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f0f0;
             color: #333333;
+            transition: color 0.3s ease;
         }
         .text-green-main { color: #00b300; }
         .text-green-light { color: #33cc33; }
         .glass-card {
-            background-color: rgba(255, 255, 255, 0.4);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.6));
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
         .glass-btn {
-            background-color: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5));
             backdrop-filter: blur(10px);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .interactive-btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .interactive-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .bg-green-main {
+            background-color: #00b300;
+            transition: background-color 0.3s ease;
+        }
+        .bg-green-main.interactive-btn:hover {
+            background-color: #008f00;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+        .bg-gray-300.hover\\:bg-gray-400:hover {
+            background-color: #a1a1aa;
         }
         .font-8bit {
             font-family: 'Press Start 2P', cursive;
@@ -46,6 +67,7 @@
             backdrop-filter: blur(5px);
             justify-content: center;
             align-items: center;
+            perspective: 1000px;
         }
         .modal-content {
             background-color: #fefefe;
@@ -55,6 +77,11 @@
             max-width: 500px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             position: relative;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .modal-content:hover {
+            transform: scale(1.01) rotateX(1deg) rotateY(1deg);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
         .close-btn {
             color: #aaa;
@@ -96,15 +123,120 @@
         .richtext-toolbar button:hover {
             transform: scale(1.1);
         }
+        #topoCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e6e6e6;
+        }
+        body.dark-mode .text-gray-900 { color: #ffffff; }
+        body.dark-mode .text-gray-700 { color: #d1d5db; }
+        body.dark-mode .text-gray-600 { color: #a1a1aa; }
+        body.dark-mode .text-gray-500 { color: #737373; }
+        body.dark-mode .text-gray-400 { color: #4b5563; }
+        body.dark-mode .bg-gray-200 { background-color: #262626; }
+        body.dark-mode .glass-card {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode .glass-btn {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+            color: #fff;
+        }
+        body.dark-mode .modal-content {
+            background-color: #262626;
+        }
+        body.dark-mode .richtext-editor {
+            background-color: #262626;
+            color: #d1d5db;
+            border-color: #4b5563;
+        }
+        body.dark-mode input, body.dark-mode textarea {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #e6e6e6;
+        }
+
+        /* 8-bit Shine Animation */
+        @keyframes shine {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .shine-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 25%,
+                rgba(255, 255, 255, 0.5) 50%,
+                rgba(255, 255, 255, 0.1) 75%,
+                transparent 100%
+            );
+            transform: skewX(-20deg);
+            animation: shine 10s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* New Typewriter Animation for 10hp logo */
+        .typewriter-logo {
+            overflow: hidden; /* Hide the overflowing text */
+            white-space: nowrap; /* Prevent text from wrapping */
+            width: 0; /* Start with no width */
+            border-right: .15em solid #00b300; /* Blinking cursor */
+            animation: typing 2s steps(40, end) forwards, blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00b300; }
+        }
+        .typewriter-logo.completed {
+            border-right: none;
+        }
+        .unselected-nav-link {
+            background-color: transparent;
+            color: #4b5563; /* Gray text color */
+            transition: all 0.3s ease;
+        }
+        .selected-nav-link {
+            background-color: #00b300;
+            color: white;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+    <!-- Animated Canvas Background -->
+    <canvas id="topoCanvas" class="fixed top-0 left-0 w-full h-full z-[-1]"></canvas>
 
     <!-- Header -->
     <header class="bg-gray-200 p-4 border-b-2 border-green-main shadow-lg">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <a href="#" id="mainLogo" class="font-8bit font-bold text-gray-900 transition-colors duration-300 hover:text-green-main leading-none">
-                <span class="text-2xl">10hp</span><br>
+            <a href="#" id="mainLogo" class="font-8bit font-bold text-gray-900 transition-colors duration-300 hover:text-green-main leading-none shine-effect">
+                <span id="logoText" class="text-2xl typewriter-logo">10hp</span><br>
                 <span class="text-lg">studio</span>
             </a>
             <div class="flex items-center w-full md:w-auto space-x-2 md:space-x-4">
@@ -117,13 +249,13 @@
                 </div>
                 <nav class="hidden md:block">
                     <ul class="flex space-x-4 items-center">
-                        <li><a href="#" id="homeLink" class="text-gray-900 hover:text-green-light transition-colors duration-300">Home</a></li>
-                        <li><a href="#" id="browseLink" class="text-gray-900 hover:text-green-light transition-colors duration-300">Browse</a></li>
-                        <li><button id="publishBtn" class="px-4 py-2 glass-btn text-gray-900 rounded-full font-semibold transition-transform duration-300 hover:scale-105" style="display:none;">Publish</button></li>
-                        <li><a href="#" id="profileLink" class="px-4 py-2 glass-btn text-gray-900 rounded-full font-semibold transition-transform duration-300 hover:scale-105" style="display:none;">My Profile</a></li>
-                        <li><a href="#" id="loginLink" class="px-4 py-2 glass-btn text-gray-900 rounded-full font-semibold transition-transform duration-300 hover:scale-105">Login</a></li>
-                        <li><a href="#" id="registerLink" class="px-4 py-2 glass-btn text-gray-900 rounded-full font-semibold transition-transform duration-300 hover:scale-105">Register</a></li>
-                        <li><a href="#" id="logoutLink" class="px-4 py-2 glass-btn text-gray-900 rounded-full font-semibold transition-transform duration-300 hover:scale-105" style="display:none;">Logout</a></li>
+                        <li><a href="#" id="homeLink" class="px-4 py-2 rounded-full font-semibold nav-item selected-nav-link">Home</a></li>
+                        <li><a href="#" id="browseLink" class="px-4 py-2 rounded-full font-semibold nav-item unselected-nav-link">Browse</a></li>
+                        <li><button id="publishBtn" class="px-4 py-2 rounded-full font-semibold nav-item unselected-nav-link" style="display:none;">Publish</button></li>
+                        <li><a href="#" id="profileLink" class="px-4 py-2 rounded-full font-semibold nav-item unselected-nav-link" style="display:none;">My Profile</a></li>
+                        <li><a href="#" id="loginLink" class="px-4 py-2 rounded-full font-semibold nav-item glass-btn text-gray-900" style="display:none;">Login</a></li>
+                        <li><a href="#" id="registerLink" class="px-4 py-2 rounded-full font-semibold nav-item glass-btn text-gray-900" style="display:none;">Register</a></li>
+                        <li><a href="#" id="logoutLink" class="px-4 py-2 rounded-full font-semibold nav-item glass-btn text-gray-900" style="display:none;">Logout</a></li>
                     </ul>
                 </nav>
             </div>
@@ -140,7 +272,7 @@
             <p class="text-gray-700 leading-relaxed mb-6">
                 At 10hp studio, our mission is to provide a user-friendly platform for artists and writers to share their work with the world. We believe that everyone deserves a space to showcase their creativity, whether you're working on a manga, a light novel, a manhwa, or any other form of comic. Our platform empowers you to publish your creations and connect with a global community of readers and fellow creators. Join us in building a new era of independent storytelling.
             </p>
-            <button id="exploreBtn" class="px-6 py-3 glass-btn text-gray-900 rounded-full font-semibold transition-transform duration-300 hover:scale-105">
+            <button id="exploreBtn" class="px-6 py-3 glass-btn text-gray-900 rounded-full font-semibold interactive-btn">
                 Explore the Library
             </button>
         </div>
@@ -178,10 +310,10 @@
             <form id="publishForm" class="glass-card p-6 rounded-xl space-y-6">
                 <!-- Content Type Selection -->
                 <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
-                    <button type="button" id="mangaModeBtn" class="w-full md:w-1/2 py-3 px-6 rounded-xl font-bold text-white transition-colors duration-300" style="background-color: #00b300;">
+                    <button type="button" id="mangaModeBtn" class="w-full md:w-1/2 py-3 px-6 rounded-xl font-bold text-white bg-green-main interactive-btn">
                         Manga / Comic
                     </button>
-                    <button type="button" id="lightNovelModeBtn" class="w-full md:w-1/2 py-3 px-6 rounded-xl font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 transition-colors duration-300">
+                    <button type="button" id="lightNovelModeBtn" class="w-full md:w-1/2 py-3 px-6 rounded-xl font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 interactive-btn">
                         Light Novel
                     </button>
                 </div>
@@ -197,8 +329,11 @@
                         <input type="text" id="mangaAuthor" name="mangaAuthor" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-main focus:ring-green-main">
                     </div>
                     <div>
-                        <label for="coverUpload" class="block text-sm font-semibold text-gray-700">Cover Image (JPG, PNG)</label>
-                        <input type="file" id="coverUpload" name="coverUpload" accept="image/png, image/jpeg" class="mt-1 block w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-main file:text-white hover:file:bg-green-light">
+                        <label for="coverUploadLabel" class="block text-sm font-semibold text-gray-700">Cover Image (JPG, PNG)</label>
+                        <input type="file" id="coverUpload" name="coverUpload" accept="image/png, image/jpeg" class="hidden">
+                        <label for="coverUpload" id="coverUploadLabel" class="block w-full text-center py-2 px-4 rounded-full border-0 text-sm font-semibold cursor-pointer bg-gray-300 text-gray-900 hover:bg-gray-400 interactive-btn mt-2">
+                            Choose Files
+                        </label>
                         <p class="mt-2 text-xs text-gray-500">Maximum file size: 10 MB</p>
                     </div>
                     <div>
@@ -228,8 +363,11 @@
                     <h2 class="text-xl font-bold text-center mt-6">Manga / Comic Panels</h2>
                     <p class="text-sm text-center text-gray-600">Drag and drop images to rearrange them. Chapter numbers will be auto-generated for you based on the order.</p>
                     <div>
-                        <label for="panelsUpload" class="block text-sm font-semibold text-gray-700">Upload Panels (JPG, PNG)</label>
-                        <input type="file" id="panelsUpload" name="panelsUpload" multiple accept="image/png, image/jpeg" class="mt-1 block w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-main file:text-white hover:file:bg-green-light">
+                        <label for="panelsUploadLabel" class="block text-sm font-semibold text-gray-700">Upload Panels (JPG, PNG)</label>
+                        <input type="file" id="panelsUpload" name="panelsUpload" multiple accept="image/png, image/jpeg" class="hidden">
+                        <label for="panelsUpload" id="panelsUploadLabel" class="block w-full text-center py-2 px-4 rounded-full border-0 text-sm font-semibold cursor-pointer bg-gray-300 text-gray-900 hover:bg-gray-400 interactive-btn mt-2">
+                            Choose Files
+                        </label>
                     </div>
                     <div id="panelsGrid" class="panel-grid p-4 border border-dashed border-gray-400 rounded-lg min-h-[150px] bg-gray-100">
                         <p class="text-center text-gray-500 col-span-full self-center">Your panels will appear here.</p>
@@ -240,24 +378,27 @@
                 <div id="lightNovelSection" class="space-y-4" style="display: none;">
                     <h2 class="text-xl font-bold text-center mt-6">Light Novel Content</h2>
                     <div class="flex space-x-2 justify-center richtext-toolbar text-gray-700">
-                        <button type="button" class="glass-btn px-2 py-1 rounded-lg" onclick="document.execCommand('bold', false, null)"><strong class="text-lg">B</strong></button>
-                        <button type="button" class="glass-btn px-2 py-1 rounded-lg" onclick="document.execCommand('italic', false, null)"><em class="text-lg">I</em></button>
-                        <button type="button" class="glass-btn px-2 py-1 rounded-lg" onclick="document.execCommand('underline', false, null)"><u class="text-lg">U</u></button>
-                        <button type="button" class="glass-btn px-2 py-1 rounded-lg" onclick="document.execCommand('insertUnorderedList', false, null)">UL</button>
-                        <button type="button" class="glass-btn px-2 py-1 rounded-lg" onclick="document.execCommand('insertOrderedList', false, null)">OL</button>
+                        <button type="button" class="glass-btn px-2 py-1 rounded-lg interactive-btn" onclick="document.execCommand('bold', false, null)"><strong class="text-lg">B</strong></button>
+                        <button type="button" class="glass-btn px-2 py-1 rounded-lg interactive-btn" onclick="document.execCommand('italic', false, null)"><em class="text-lg">I</em></button>
+                        <button type="button" class="glass-btn px-2 py-1 rounded-lg interactive-btn" onclick="document.execCommand('underline', false, null)"><u class="text-lg">U</u></button>
+                        <button type="button" class="glass-btn px-2 py-1 rounded-lg interactive-btn" onclick="document.execCommand('insertUnorderedList', false, null)">UL</button>
+                        <button type="button" class="glass-btn px-2 py-1 rounded-lg interactive-btn" onclick="document.execCommand('insertOrderedList', false, null)">OL</button>
                     </div>
                     <div id="novelContent" class="richtext-editor" contenteditable="true">
                         <p>Write or paste your light novel content here...</p>
                     </div>
                     <div>
-                        <label for="novelUpload" class="block text-sm font-semibold text-gray-700">Upload from file (.txt, .html)</label>
-                        <input type="file" id="novelUpload" name="novelUpload" accept=".txt,.html" class="mt-1 block w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-main file:text-white hover:file:bg-green-light">
+                        <label for="novelUploadLabel" class="block text-sm font-semibold text-gray-700">Upload from file (.txt, .html)</label>
+                        <input type="file" id="novelUpload" name="novelUpload" accept=".txt,.html" class="hidden">
+                        <label for="novelUpload" id="novelUploadLabel" class="block w-full text-center py-2 px-4 rounded-full border-0 text-sm font-semibold cursor-pointer bg-gray-300 text-gray-900 hover:bg-gray-400 interactive-btn mt-2">
+                            Choose Files
+                        </label>
                     </div>
                     <p class="text-xs text-gray-500 mt-2">Note: To upload a .docx file, a more complex setup is required. You can copy-paste content from a Word document directly into the editor above.</p>
                 </div>
                 
                 <button type="submit" id="submitBtn"
-                    class="w-full py-3 px-4 rounded-md text-white font-bold bg-green-main hover:bg-green-light transition-colors duration-300">
+                    class="w-full py-3 px-4 rounded-md text-white font-bold bg-green-main interactive-btn">
                     Publish Your Work
                 </button>
                 <p id="formMessage" class="mt-4 text-center"></p>
@@ -282,7 +423,7 @@
                         <div id="socialLinks" class="flex justify-center md:justify-start space-x-4 mb-4">
                             <!-- Social links will be injected here -->
                         </div>
-                        <button id="editProfileBtn" class="px-4 py-2 glass-btn rounded-full font-semibold transition-transform duration-300 hover:scale-105" style="display:none;">Edit Profile</button>
+                        <button id="editProfileBtn" class="px-4 py-2 glass-btn text-gray-900 rounded-full font-semibold interactive-btn" style="display:none;">Edit Profile</button>
                     </div>
                 </div>
 
@@ -315,7 +456,7 @@
                     <input type="password" id="loginPassword" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-main focus:ring-green-main">
                 </div>
                 <p id="loginMessage" class="text-center text-sm"></p>
-                <button type="submit" class="w-full py-2 px-4 rounded-md text-white font-bold bg-green-main hover:bg-green-light transition-colors duration-300">Login</button>
+                <button type="submit" class="w-full py-2 px-4 rounded-md text-white font-bold bg-green-main interactive-btn">Login</button>
             </form>
         </div>
     </div>
@@ -343,7 +484,7 @@
                     <label for="captchaCheck" class="text-sm font-medium text-gray-700">I am not a robot</label>
                 </div>
                 <p id="registerMessage" class="text-center text-sm"></p>
-                <button type="submit" class="w-full py-2 px-4 rounded-md text-white font-bold bg-green-main hover:bg-green-light transition-colors duration-300">Register</button>
+                <button type="submit" class="w-full py-2 px-4 rounded-md text-white font-bold bg-green-main interactive-btn">Register</button>
             </form>
         </div>
     </div>
@@ -356,11 +497,17 @@
             <form id="editProfileForm" class="space-y-4">
                 <div>
                     <label for="editPfp" class="block text-sm font-medium text-gray-700">Profile Picture</label>
-                    <input type="file" id="editPfp" accept="image/*" class="mt-1 block w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-main file:text-white hover:file:bg-green-light">
+                    <input type="file" id="editPfp" accept="image/*" class="hidden">
+                    <label for="editPfp" class="block w-full text-center py-2 px-4 rounded-full border-0 text-sm font-semibold cursor-pointer bg-gray-300 text-gray-900 hover:bg-gray-400 interactive-btn mt-2">
+                        Choose File
+                    </label>
                 </div>
                 <div>
                     <label for="editBanner" class="block text-sm font-medium text-gray-700">Banner Image</label>
-                    <input type="file" id="editBanner" accept="image/*" class="mt-1 block w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-main file:text-white hover:file:bg-green-light">
+                    <input type="file" id="editBanner" accept="image/*" class="hidden">
+                    <label for="editBanner" class="block w-full text-center py-2 px-4 rounded-full border-0 text-sm font-semibold cursor-pointer bg-gray-300 text-gray-900 hover:bg-gray-400 interactive-btn mt-2">
+                        Choose File
+                    </label>
                 </div>
                 <div>
                     <label for="editBio" class="block text-sm font-medium text-gray-700">Bio</label>
@@ -379,24 +526,8 @@
                     </div>
                 </div>
                 <p id="editProfileMessage" class="text-center text-sm mt-4"></p>
-                <button type="submit" class="w-full py-2 px-4 rounded-md text-white font-bold bg-green-main hover:bg-green-light transition-colors duration-300">Save Profile</button>
+                <button type="submit" class="w-full py-2 px-4 rounded-md text-white font-bold bg-green-main interactive-btn">Save Profile</button>
             </form>
-            
-            <div id="paywallSection" class="mt-8 p-4 bg-gray-100 rounded-lg">
-                <h3 class="text-lg font-bold text-center text-gray-700">Unlock Customizations</h3>
-                <p class="text-sm text-center text-gray-500 mb-4">Upgrade to a premium account to unlock more profile options!</p>
-                <div id="premiumOptions" class="space-y-4" style="display: none;">
-                    <div>
-                        <label for="customBgUpload" class="block text-sm font-medium text-gray-700">Custom Background</label>
-                        <input type="file" id="customBgUpload" accept="image/*" class="mt-1 block w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-main file:text-white hover:file:bg-green-light">
-                    </div>
-                    <div>
-                        <label for="bgColor" class="block text-sm font-medium text-gray-700">Background Color</label>
-                        <input type="color" id="bgColor" class="mt-1 block w-full h-10">
-                    </div>
-                </div>
-                <button id="buyPremiumBtn" class="w-full mt-4 py-2 px-4 rounded-md text-white font-bold bg-yellow-500 hover:bg-yellow-600 transition-colors duration-300">Unlock Premium ($5.99)</button>
-            </div>
         </div>
     </div>
 
@@ -424,8 +555,8 @@
                 </div>
             </div>
             <div class="mt-6 flex justify-center space-x-4">
-                <button id="viewChaptersBtn" class="px-6 py-3 glass-btn rounded-full font-semibold transition-transform duration-300 hover:scale-105">View Chapters</button>
-                <button id="readBtn" class="px-6 py-3 glass-btn rounded-full font-semibold transition-transform duration-300 hover:scale-105">Read First Chapter</button>
+                <button id="viewChaptersBtn" class="px-6 py-3 glass-btn rounded-full font-semibold interactive-btn">View Chapters</button>
+                <button id="readBtn" class="px-6 py-3 glass-btn rounded-full font-semibold interactive-btn">Read First Chapter</button>
             </div>
         </div>
     </div>
@@ -452,11 +583,21 @@
         </div>
     </div>
     
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="fixed bottom-4 right-4 p-3 rounded-full bg-gray-300 dark-mode-toggle-btn shadow-lg transition-colors duration-300 z-50">
+        <svg id="sunIcon" class="h-6 w-6 text-yellow-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.768 5.768a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.061 1.061l-1.59-1.591a.75.75 0 010-1.06zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM7.768 18.232a.75.75 0 010-1.061l1.591-1.591a.75.75 0 111.06 1.06l-1.59 1.592a.75.75 0 01-1.061 0zM12 17.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM18.232 18.232a.75.75 0 01-1.06-1.061l1.591-1.591a.75.75 0 111.06 1.06l-1.59 1.592a.75.75 0 01-1.061 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM18.232 5.768a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.061 1.061l-1.59-1.591a.75.75 0 010-1.06z" />
+        </svg>
+        <svg id="moonIcon" class="h-6 w-6 text-gray-900" style="display:none;" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.593 2.25c-1.392 0-2.818.176-4.084.629C2.71 3.518 1 5.388 1 7.73a8.914 8.914 0 008.593 9.77c.394 0 .787-.038 1.173-.112-1.373-1.401-2.203-3.266-2.203-5.288 0-4.085 2.503-7.591 6.096-9.062a.75.75 0 01-.462-1.252A10.435 10.435 0 009.593 2.25z" />
+        </svg>
+    </button>
+    
     <!-- Footer -->
     <footer class="bg-gray-200 py-6 mt-auto text-center border-t-2 border-green-light">
         <div class="container mx-auto px-4">
             <p class="text-gray-600 text-sm">
-                &copy; 2024 Manga Library. All rights reserved.
+                &copy; 2024 Virtualism IN. All rights reserved.
             </p>
             <div class="mt-2 text-gray-500 text-xs">
                 <a href="#" class="hover:text-green-main">Privacy Policy</a> |
@@ -480,7 +621,7 @@
         const pages = ['homePage', 'mangaLibraryPage', 'publishStudioPage', 'authorProfilePage'];
         const elements = {};
         pages.forEach(id => elements[id] = document.getElementById(id));
-        ['mainLogo', 'homeLink', 'browseLink', 'publishBtn', 'profileLink', 'loginLink', 'registerLink', 'logoutLink', 'exploreBtn', 'mangaGrid', 'searchInput', 'mangaDetailsModal', 'chapterListModal', 'contentViewerModal', 'loginModal', 'registerModal', 'editProfileModal'].forEach(id => elements[id] = document.getElementById(id));
+        ['mainLogo', 'logoText', 'homeLink', 'browseLink', 'publishBtn', 'profileLink', 'loginLink', 'registerLink', 'logoutLink', 'exploreBtn', 'mangaGrid', 'searchInput', 'mangaDetailsModal', 'chapterListModal', 'contentViewerModal', 'loginModal', 'registerModal', 'editProfileModal', 'darkModeToggle', 'sunIcon', 'moonIcon'].forEach(id => elements[id] = document.getElementById(id));
         document.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', (e) => {
             const modalId = e.target.getAttribute('data-modal-id');
             elements[modalId].style.display = 'none';
@@ -495,7 +636,7 @@
         const mangaSection = document.getElementById('mangaSection');
         const lightNovelSection = document.getElementById('lightNovelSection');
         const panelsUpload = document.getElementById('panelsUpload');
-        const panelsGrid = document.getElementById('panelsGrid');
+        const panelsUploadLabel = document.getElementById('panelsUploadLabel');
         const novelContent = document.getElementById('novelContent');
         const novelUpload = document.getElementById('novelUpload');
         const viewerTitle = document.getElementById('viewerTitle');
@@ -511,17 +652,97 @@
         const editProfileBtn = document.getElementById('editProfileBtn');
         const editProfileForm = document.getElementById('editProfileForm');
         const editProfileMessage = document.getElementById('editProfileMessage');
-        const buyPremiumBtn = document.getElementById('buyPremiumBtn');
-        const premiumOptions = document.getElementById('premiumOptions');
         const trendingMangaGrid = document.getElementById('trendingMangaGrid');
+        const navItems = document.querySelectorAll('.nav-item');
 
         let db, auth, storage, currentUserId, currentUsername;
         let currentPublishMode = 'manga'; // Default mode
         let panels = []; // Array to store uploaded panel files
         let currentManga = null; // Store the currently selected manga object
 
+        // Canvas Animation Logic
+        const canvas = document.getElementById('topoCanvas');
+        const ctx = canvas.getContext('2d');
+        let lines = [];
+        let waveTime = 0;
+        let lineCount = 30; // Number of lines to draw
+        let lineColor = '#e5e7eb'; // Light color for the lines by default
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            lines = [];
+            for (let i = 0; i < lineCount; i++) {
+                lines.push({
+                    y: (canvas.height / lineCount) * i,
+                    seed: Math.random() * 1000
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 1;
+            
+            waveTime += 0.01;
+
+            lines.forEach(line => {
+                ctx.beginPath();
+                ctx.moveTo(0, line.y);
+                for (let x = 0; x <= canvas.width; x += 5) {
+                    // Combine multiple sine waves for a complex, swirling effect
+                    const yOffset1 = Math.sin((x + waveTime * 100) * 0.01 + line.seed) * 20;
+                    const yOffset2 = Math.cos((x + waveTime * 50) * 0.02 + line.seed) * 15;
+                    const yOffset3 = Math.sin((x + waveTime * 20) * 0.05 + line.seed) * 10;
+                    const totalYOffset = yOffset1 + yOffset2 + yOffset3;
+                    ctx.lineTo(x, line.y + totalYOffset);
+                }
+                ctx.stroke();
+            });
+        }
+
+        function animate() {
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        // Dark Mode Logic
+        function setDarkMode(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                elements['sunIcon'].style.display = 'none';
+                elements['moonIcon'].style.display = 'block';
+                lineColor = '#4b5563'; // Darker color for lines
+                localStorage.setItem('darkMode', 'true');
+            } else {
+                document.body.classList.remove('dark-mode');
+                elements['sunIcon'].style.display = 'block';
+                elements['moonIcon'].style.display = 'none';
+                lineColor = '#d1d5db'; // Lighter color for lines
+                localStorage.setItem('darkMode', 'false');
+            }
+        }
+
+        elements['darkModeToggle'].addEventListener('click', () => {
+            setDarkMode(!document.body.classList.contains('dark-mode'));
+        });
+        
+        // Navigation button logic
+        function setActiveNavLink(linkId) {
+            navItems.forEach(link => {
+                link.classList.remove('selected-nav-link');
+                link.classList.add('unselected-nav-link');
+            });
+            const activeLink = document.getElementById(linkId);
+            if (activeLink) {
+                activeLink.classList.remove('unselected-nav-link');
+                activeLink.classList.add('selected-nav-link');
+            }
+        }
+
         // Function to toggle between pages
-        function showPage(pageId, extraData = null) {
+        function showPage(pageId, extraData = null, linkId = null) {
             pages.forEach(id => elements[id].style.display = 'none');
             const pageElement = elements[pageId];
             if (pageElement) {
@@ -533,22 +754,26 @@
                     displayAuthorProfile(extraData);
                 }
             }
+            if (linkId) {
+                setActiveNavLink(linkId);
+            }
         }
 
         // Set the publish form mode
         function setPublishMode(mode) {
             currentPublishMode = mode;
             if (mode === 'manga') {
-                mangaModeBtn.style.backgroundColor = '#00b300';
-                mangaModeBtn.style.color = '#fff';
-                lightNovelModeBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                lightNovelModeBtn.style.color = '#333';
+                mangaModeBtn.classList.add('bg-green-main', 'text-white');
+                mangaModeBtn.classList.remove('bg-gray-300', 'text-gray-900');
+                lightNovelModeBtn.classList.remove('bg-green-main', 'text-white');
+                lightNovelModeBtn.classList.add('bg-gray-300', 'text-gray-900');
                 mangaSection.style.display = 'block';
                 lightNovelSection.style.display = 'none';
             } else if (mode === 'light_novel') {
-                mangaModeBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                lightNovelModeBtn.style.backgroundColor = '#00b300';
-                lightNovelModeBtn.style.color = '#fff';
+                mangaModeBtn.classList.remove('bg-green-main', 'text-white');
+                mangaModeBtn.classList.add('bg-gray-300', 'text-gray-900');
+                lightNovelModeBtn.classList.add('bg-green-main', 'text-white');
+                lightNovelModeBtn.classList.remove('bg-gray-300', 'text-gray-900');
                 mangaSection.style.display = 'none';
                 lightNovelSection.style.display = 'block';
             }
@@ -615,6 +840,18 @@
         
         async function getUserProfile(userId) {
             if (!db) return null;
+            // IMPORTANT: Firestore Security Rules are CRITICAL for privacy.
+            // Add the following rules in your Firebase console to protect user profiles:
+            //
+            // rules_version = '2';
+            // service cloud.firestore {
+            //   match /databases/{database}/documents {
+            //     match /artifacts/{appId}/users/{userId}/profile/{docId} {
+            //       allow read, write: if request.auth != null && request.auth.uid == userId;
+            //     }
+            //   }
+            // }
+            // This ensures only the authenticated user can read and write their own profile data.
             const profileDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile/details`);
             const profileSnap = await getDoc(profileDocRef);
             return profileSnap.exists() ? profileSnap.data() : null;
@@ -632,21 +869,6 @@
             const collectionPath = `artifacts/${appId}/public/data/manga`;
             const mangaColRef = collection(db, collectionPath);
             
-            // NOTE: The 'Missing or insufficient permissions' error is likely due to your Firestore Security Rules.
-            // You need to update your rules to allow read access to the 'manga' collection.
-            //
-            // Here is an example of the rules you should add to your Firebase console:
-            //
-            // rules_version = '2';
-            // service cloud.firestore {
-            //   match /databases/{database}/documents {
-            //     match /artifacts/{appId}/public/data/manga/{mangaId} {
-            //       allow read; // Allows anyone to read
-            //       allow write: if request.auth != null; // Allows authenticated users to write
-            //     }
-            //   }
-            // }
-
             onSnapshot(mangaColRef, async (querySnapshot) => {
                 const mangaData = [];
                 // Add a pre-populated demo manga title for the user to try
@@ -729,7 +951,7 @@
             authorLink.className = 'hover:underline';
             authorLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                showPage('authorProfilePage', manga.publisherId);
+                showPage('authorProfilePage', manga.publisherId, 'profileLink');
             });
             author.appendChild(authorLink);
             
@@ -743,19 +965,6 @@
             });
 
             return card;
-        }
-        
-        // Function to render the manga grid
-        function renderManga(mangaArray) {
-            elements['mangaGrid'].innerHTML = '';
-            if (mangaArray.length === 0) {
-                elements['mangaGrid'].innerHTML = '<p class="col-span-full text-center text-gray-500">No manga titles found. Be the first to publish one!</p>';
-            } else {
-                mangaArray.forEach(manga => {
-                    const card = createMangaCard(manga);
-                    elements['mangaGrid'].appendChild(card);
-                });
-            }
         }
         
         // Function to render the trending manga list
@@ -794,16 +1003,8 @@
             const profileContainer = document.getElementById('profileContainer');
 
             if (profileContainer) {
-                // Apply premium style if unlocked
-                if (profile && profile.isPremium) {
-                    profileContainer.style.backgroundColor = profile.bgColor || '';
-                    profileContainer.style.backgroundImage = profile.bgUrl ? `url(${profile.bgUrl})` : 'none';
-                    profileContainer.style.backgroundSize = 'cover';
-                    profileContainer.style.backgroundPosition = 'center';
-                } else {
-                    profileContainer.style.backgroundColor = '';
-                    profileContainer.style.backgroundImage = 'none';
-                }
+                profileContainer.style.backgroundColor = '';
+                profileContainer.style.backgroundImage = 'none';
             }
 
             document.getElementById('profileName').textContent = profile?.name || 'Unknown Author';
@@ -864,7 +1065,7 @@
             authorLink.onclick = (e) => {
                 e.preventDefault();
                 elements['mangaDetailsModal'].style.display = 'none';
-                showPage('authorProfilePage', manga.publisherId);
+                showPage('authorProfilePage', manga.publisherId, 'profileLink');
             };
             document.getElementById('detailsSynopsis').textContent = manga.synopsis || "No synopsis available.";
             document.getElementById('detailsGenre').textContent = manga.genre || "N/A";
@@ -885,12 +1086,12 @@
             e.preventDefault();
             await signOut(auth);
             console.log("User signed out.");
-            showPage('homePage');
+            showPage('homePage', null, 'homeLink');
         });
         elements['profileLink'].addEventListener('click', (e) => {
             e.preventDefault();
             if (currentUserId) {
-                showPage('authorProfilePage', currentUserId);
+                showPage('authorProfilePage', currentUserId, 'profileLink');
             }
         });
         
@@ -921,13 +1122,6 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const userId = userCredential.user.uid;
                 // Create a basic user profile in Firestore
-                // NOTE: To fix the "Missing or insufficient permissions" error for new user profiles,
-                // ensure your Firestore Security Rules allow writes to the user's private data path.
-                //
-                // Example rules for user profiles:
-                // match /artifacts/{appId}/users/{userId}/profile/details {
-                //   allow read, write: if request.auth != null && request.auth.uid == userId;
-                // }
                 const profileRef = doc(db, `artifacts/${appId}/users/${userId}/profile/details`);
                 await setDoc(profileRef, {
                     name: name,
@@ -935,8 +1129,7 @@
                     bio: 'No bio yet.',
                     socialLinks: { twitter: '', instagram: '' },
                     pfpUrl: 'https://placehold.co/128x128/D1D5DB/6B7280?text=PFP',
-                    bannerUrl: 'https://placehold.co/1024x256/E5E7EB/A1A1AA?text=Default+Banner',
-                    isPremium: false
+                    bannerUrl: 'https://placehold.co/1024x256/E5E7EB/A1A1AA?text=Default+Banner'
                 });
                 registerMessage.textContent = 'Registration successful! You can now log in.';
                 registerMessage.style.color = 'green';
@@ -954,16 +1147,6 @@
                 document.getElementById('editBio').value = profile.bio || '';
                 document.getElementById('social-twitter').value = profile.socialLinks?.twitter || '';
                 document.getElementById('social-instagram').value = profile.socialLinks?.instagram || '';
-                if (profile.isPremium) {
-                    buyPremiumBtn.textContent = 'Premium Unlocked';
-                    buyPremiumBtn.disabled = true;
-                    premiumOptions.style.display = 'block';
-                    document.getElementById('bgColor').value = profile.bgColor || '#ffffff';
-                } else {
-                    buyPremiumBtn.textContent = 'Unlock Premium ($5.99)';
-                    buyPremiumBtn.disabled = false;
-                    premiumOptions.style.display = 'none';
-                }
             }
             elements['editProfileModal'].style.display = 'flex';
         });
@@ -977,8 +1160,6 @@
                 const instagram = document.getElementById('social-instagram').value;
                 const pfpFile = document.getElementById('editPfp').files[0];
                 const bannerFile = document.getElementById('editBanner').files[0];
-                const customBgFile = document.getElementById('customBgUpload').files[0];
-                const bgColor = document.getElementById('bgColor').value;
                 
                 const profileRef = doc(db, `artifacts/${appId}/users/${currentUserId}/profile/details`);
                 const updateData = {
@@ -1000,17 +1181,6 @@
                     updateData.bannerUrl = await getDownloadURL(bannerRef);
                 }
                 
-                // Upload and get URL for Custom BG (if premium)
-                if (customBgFile && !buyPremiumBtn.disabled) {
-                    const customBgRef = ref(storage, `user-profiles/${currentUserId}/custom-bg/${customBgFile.name}`);
-                    await uploadBytes(customBgRef, customBgFile);
-                    updateData.bgUrl = await getDownloadURL(customBgRef);
-                }
-                
-                if (!buyPremiumBtn.disabled) {
-                    updateData.bgColor = bgColor;
-                }
-
                 await setDoc(profileRef, updateData, { merge: true });
                 editProfileMessage.textContent = 'Profile updated successfully!';
                 editProfileMessage.style.color = 'green';
@@ -1019,21 +1189,6 @@
                 editProfileMessage.textContent = `Error: ${error.message}`;
                 editProfileMessage.style.color = 'red';
                 console.error("Profile update failed:", error);
-            }
-        });
-        
-        buyPremiumBtn.addEventListener('click', async () => {
-            const profileRef = doc(db, `artifacts/${appId}/users/${currentUserId}/profile/details`);
-            try {
-                await setDoc(profileRef, { isPremium: true }, { merge: true });
-                buyPremiumBtn.textContent = 'Premium Unlocked';
-                buyPremiumBtn.disabled = true;
-                premiumOptions.style.display = 'block';
-                editProfileMessage.textContent = 'Premium features unlocked!';
-                editProfileMessage.style.color = 'green';
-            } catch (error) {
-                editProfileMessage.textContent = `Error: ${error.message}`;
-                editProfileMessage.style.color = 'red';
             }
         });
 
@@ -1136,10 +1291,10 @@
                 formMessage.style.color = "green";
                 publishForm.reset();
                 panels = []; // Clear panels after successful submission
-                renderPanels();
+                // renderPanels();
                 novelContent.innerHTML = "<p>Write or paste your light novel content here...</p>";
                 setPublishMode('manga'); // Reset to default mode
-                showPage('mangaLibraryPage');
+                showPage('mangaLibraryPage', null, 'browseLink');
             } catch (e) {
                 console.error("Error adding document:", e);
                 formMessage.textContent = "Failed to publish. Please check console for details.";
@@ -1148,15 +1303,21 @@
         });
         
         // Navigation
-        elements['mainLogo'].addEventListener('click', (e) => { e.preventDefault(); showPage('homePage'); });
-        elements['homeLink'].addEventListener('click', (e) => { e.preventDefault(); showPage('homePage'); });
-        elements['browseLink'].addEventListener('click', (e) => { e.preventDefault(); showPage('mangaLibraryPage'); });
-        elements['exploreBtn'].addEventListener('click', (e) => { e.preventDefault(); showPage('mangaLibraryPage'); });
-        elements['publishBtn'].addEventListener('click', () => { showPage('publishStudioPage'); });
+        elements['mainLogo'].addEventListener('click', (e) => { e.preventDefault(); showPage('homePage', null, 'homeLink'); });
+        elements['homeLink'].addEventListener('click', (e) => { e.preventDefault(); showPage('homePage', null, 'homeLink'); });
+        elements['browseLink'].addEventListener('click', (e) => { e.preventDefault(); showPage('mangaLibraryPage', null, 'browseLink'); });
+        elements['exploreBtn'].addEventListener('click', (e) => { e.preventDefault(); showPage('mangaLibraryPage', null, 'browseLink'); });
+        elements['publishBtn'].addEventListener('click', () => { showPage('publishStudioPage', null, 'publishBtn'); });
         mangaModeBtn.addEventListener('click', () => setPublishMode('manga'));
         lightNovelModeBtn.addEventListener('click', () => setPublishMode('light_novel'));
 
 
+        // Initial setup
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        setDarkMode(isDarkMode);
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
         initFirebase();
         setPublishMode('manga');
         
